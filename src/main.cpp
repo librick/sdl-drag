@@ -77,6 +77,7 @@ static void frame(AppState& s) {
             }
             section_stats("Simulation without drag", "##stats", params_no_drag, result_no_drag);
             section_stats("Simulation with drag", "##stats_drag", params_drag, result_drag);
+            section_links();
         }
         ImGui::EndChild();
         ImGui::SameLine();
@@ -179,7 +180,11 @@ int main()
 
     // Use better font
     ImGui::GetIO().Fonts->AddFontFromFileTTF("external/imgui/misc/fonts/Roboto-Medium.ttf");
+#ifdef __EMSCRIPTEN__
+    ImGui::GetStyle().FontSizeBase = 16.0f;
+#else
     ImGui::GetStyle().FontSizeBase = 20.0f;
+#endif
 
     static AppState state;
     state.window = window;

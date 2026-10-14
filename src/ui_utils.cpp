@@ -4,6 +4,34 @@
 #include "plot_utils.h"
 #include <implot3d.h>
 
+bool slider_with_input(const char* label, double* v, double v_min, double v_max, const char* fmt) {
+    const float label_width = ImGui::GetFontSize() * 9.0f;
+    const float input_width = ImGui::GetFontSize() * 5.0f;
+    const float spacing = ImGui::GetStyle().ItemInnerSpacing.x;
+    const float pad = ImGui::GetFontSize() * 0.5f;
+    bool changed = false;
+
+    ImGui::PushID(label);
+    ImGui::AlignTextToFramePadding();
+    ImGui::TextUnformatted(label);
+    ImGui::SameLine(label_width + pad);
+    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - input_width - spacing - pad);
+    changed |= ImGui::SliderScalar("##slider", ImGuiDataType_Double, v, &v_min, &v_max, fmt);
+    ImGui::SameLine(0.0f, spacing);
+    ImGui::SetNextItemWidth(input_width);
+    changed |= ImGui::InputDouble("##input", v, 0.0, 0.0, fmt);
+    ImGui::PopID();
+    return changed;
+}
+
+void table_row_key_value(const char* key, double value) {
+    ImGui::TableNextRow();
+    ImGui::TableSetColumnIndex(0);
+    ImGui::TextUnformatted(key);
+    ImGui::TableSetColumnIndex(1);
+    ImGui::Text("%.2f", value);
+}
+
 void section_title(const char* text) {
     const ImGuiStyle& style = ImGui::GetStyle();
     ImGui::PushFont(nullptr, style.FontSizeBase * 1.2f);
@@ -31,26 +59,6 @@ void section_spacer() {
 
 void section_end() {
     ImGui::Dummy(ImVec2(0.0f, ImGui::GetFontSize() * 1.0f));
-}
-
-bool slider_with_input(const char* label, double* v, double v_min, double v_max, const char* fmt) {
-    const float label_width = ImGui::GetFontSize() * 9.0f;
-    const float input_width = ImGui::GetFontSize() * 5.0f;
-    const float spacing = ImGui::GetStyle().ItemInnerSpacing.x;
-    const float pad = ImGui::GetFontSize() * 0.5f;
-    bool changed = false;
-
-    ImGui::PushID(label);
-    ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted(label);
-    ImGui::SameLine(label_width + pad);
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - input_width - spacing - pad);
-    changed |= ImGui::SliderScalar("##slider", ImGuiDataType_Double, v, &v_min, &v_max, fmt);
-    ImGui::SameLine(0.0f, spacing);
-    ImGui::SetNextItemWidth(input_width);
-    changed |= ImGui::InputDouble("##input", v, 0.0, 0.0, fmt);
-    ImGui::PopID();
-    return changed;
 }
 
 bool section_presets(const std::vector<Preset>& presets, int& selected, SimulationParams& p) {
@@ -134,6 +142,12 @@ void section_stats(const char* title, const char* str_id, const SimulationParams
     section_end();
 }
 
+void section_links() {
+    section_title("Links");
+    ImGui::TextLinkOpenURL("https://github.com/librick/sdl-drag");
+    section_end();
+}
+
 void section_plot(
     const SimulationResult& result_drag,
     const SimulationResult& result_no_drag
@@ -165,12 +179,4 @@ void section_plot(
         }
     }
     ImGui::EndChild();
-}
-
-void table_row_key_value(const char* key, double value) {
-    ImGui::TableNextRow();
-    ImGui::TableSetColumnIndex(0);
-    ImGui::TextUnformatted(key);
-    ImGui::TableSetColumnIndex(1);
-    ImGui::Text("%.2f", value);
 }

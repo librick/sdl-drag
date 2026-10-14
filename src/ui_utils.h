@@ -16,4 +16,5 @@ void section_end();
 bool section_presets(const std::vector<Preset>& presets, int& selected, SimulationParams& p);
 bool section_controls(SimulationParams& p);
 void section_stats(const char* title, const char* str_id, const SimulationParams& p, const SimulationResult& res);
+void section_links();
 void section_plot(const SimulationResult& result_drag, const SimulationResult& result_no_drag);
