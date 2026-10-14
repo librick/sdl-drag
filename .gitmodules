@@ -1,3 +1,6 @@
 [submodule "external/imgui"]
 	path = external/imgui
 	url = https://github.com/ocornut/imgui.git
+[submodule "external/implot3d"]
+	path = external/implot3d
+	url = https://github.com/brenocq/implot3d.git
