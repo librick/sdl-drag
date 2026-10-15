@@ -58,10 +58,21 @@ SimulationResult run_simulation(const SimulationParams& p) {
     return res;
 }
 
-ValueAndTime get_max_x(const SimulationParams& p, const SimulationResult& res) {
-    double max_x = -1.0;
-    double t_at_max = -1.0;
+Point3D get_pos_at_max_y(const SimulationResult& res) {
+    Point3D pos_at_max_y = { -1.0, -1.0, -1.0 };
     for(unsigned long i = 0; i < res.vector_pos.size(); i++) {
+        const Point3D pos = res.vector_pos.at(i);
+        if(pos.y > pos_at_max_y.y) {
+            pos_at_max_y = pos;
+        }
+    }
+    return pos_at_max_y;
+}
+
+ValueAndTime get_max_x(const SimulationParams& p, const SimulationResult& res) {
+    double max_x = res.vector_pos.at(0).x;
+    double t_at_max = p.t_initial;
+    for(unsigned long i = 1; i < res.vector_pos.size(); i++) {
         const Point3D pos = res.vector_pos.at(i);
         if(pos.x > max_x) {
             max_x = pos.x;
@@ -72,9 +83,9 @@ ValueAndTime get_max_x(const SimulationParams& p, const SimulationResult& res) {
 }
 
 ValueAndTime get_max_y(const SimulationParams& p, const SimulationResult& res) {
-    double max_y = -1.0;
-    double t_at_max = -1.0;
-    for(unsigned long i = 0; i < res.vector_pos.size(); i++) {
+    double max_y = res.vector_pos.at(0).y;
+    double t_at_max = p.t_initial;
+    for(unsigned long i = 1; i < res.vector_pos.size(); i++) {
         const Point3D pos = res.vector_pos.at(i);
         if(pos.y > max_y) {
             max_y = pos.y;
@@ -85,9 +96,9 @@ ValueAndTime get_max_y(const SimulationParams& p, const SimulationResult& res) {
 }
 
 ValueAndTime get_max_z(const SimulationParams& p, const SimulationResult& res) {
-    double max_z = -1.0;
-    double t_at_max = -1.0;
-    for(unsigned long i = 0; i < res.vector_pos.size(); i++) {
+    double max_z = res.vector_pos.at(0).z;
+    double t_at_max = p.t_initial;
+    for(unsigned long i = 1; i < res.vector_pos.size(); i++) {
         const Point3D pos = res.vector_pos.at(i);
         if(pos.z > max_z) {
             max_z = pos.z;
@@ -95,6 +106,45 @@ ValueAndTime get_max_z(const SimulationParams& p, const SimulationResult& res) {
         }
     }
     return { max_z, t_at_max };
+}
+
+ValueAndTime get_min_x(const SimulationParams& p, const SimulationResult& res) {
+    double min_x = res.vector_pos.at(0).x;
+    double t_at_min = p.t_initial;
+    for(unsigned long i = 1; i < res.vector_pos.size(); i++) {
+        const Point3D pos = res.vector_pos.at(i);
+        if(pos.x < min_x) {
+            min_x = pos.x;
+            t_at_min = p.t_initial + i*p.dt;
+        }
+    }
+    return { min_x, t_at_min };
+}
+
+ValueAndTime get_min_y(const SimulationParams& p, const SimulationResult& res) {
+    double min_y = res.vector_pos.at(0).y;
+    double t_at_min = p.t_initial;
+    for(unsigned long i = 1; i < res.vector_pos.size(); i++) {
+        const Point3D pos = res.vector_pos.at(i);
+        if(pos.y < min_y) {
+            min_y = pos.y;
+            t_at_min = p.t_initial + i*p.dt;
+        }
+    }
+    return { min_y, t_at_min };
+}
+
+ValueAndTime get_min_z(const SimulationParams& p, const SimulationResult& res) {
+    double min_z = res.vector_pos.at(0).z;
+    double t_at_min = p.t_initial;
+    for(unsigned long i = 1; i < res.vector_pos.size(); i++) {
+        const Point3D pos = res.vector_pos.at(i);
+        if(pos.z < min_z) {
+            min_z = pos.z;
+            t_at_min = p.t_initial + i*p.dt;
+        }
+    }
+    return { min_z, t_at_min };
 }
 
 ValueAndTime get_max_range(const SimulationParams& p, const SimulationResult& res) {
@@ -119,14 +169,14 @@ static std::vector<Preset> make_presets() {
     base.m = 50.0;
 
     SimulationParams p1 = base;
-    p1.vel_initial = { 0.0, 100.0, 0.0 };
+    p1.vel_initial = { 0.0, 50.0, 0.0 };
 
     SimulationParams p2 = base;
     p2.vel_initial = { 50.0, 50.0, 0.0 };
 
     return {
-        { "Preset 1", p1 },
-        { "Preset 2", p2 },
+        { "Preset 1 (1D)", p1 },
+        { "Preset 2 (2D)", p2 },
     };
 }
 

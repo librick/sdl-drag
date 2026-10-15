@@ -29,9 +29,16 @@ struct ValueAndTime {
     double time;
 };
 
+Point3D get_pos_at_max_y(const SimulationResult& res);
+
 ValueAndTime get_max_x(const SimulationParams& p, const SimulationResult& res);
 ValueAndTime get_max_y(const SimulationParams& p, const SimulationResult& res);
 ValueAndTime get_max_z(const SimulationParams& p, const SimulationResult& res);
+
+ValueAndTime get_min_x(const SimulationParams& p, const SimulationResult& res);
+ValueAndTime get_min_y(const SimulationParams& p, const SimulationResult& res);
+ValueAndTime get_min_z(const SimulationParams& p, const SimulationResult& res);
+
 ValueAndTime get_max_range(const SimulationParams& p, const SimulationResult& res);
 
 struct Preset {

@@ -24,12 +24,12 @@ bool slider_with_input(const char* label, double* v, double v_min, double v_max,
     return changed;
 }
 
-void table_row_key_value(const char* key, double value) {
+void table_row_key_value(const char* key, double value, const char* fmt) {
     ImGui::TableNextRow();
     ImGui::TableSetColumnIndex(0);
     ImGui::TextUnformatted(key);
     ImGui::TableSetColumnIndex(1);
-    ImGui::Text("%.2f", value);
+    ImGui::Text(fmt, value);
 }
 
 void section_title(const char* text) {
@@ -97,7 +97,7 @@ bool section_controls(SimulationParams& p) {
     bool changed = false;
     section_title("Controls");
     changed |= slider_with_input("Mass m", &p.m, 0.01, 1000.0);
-    changed |= slider_with_input("Drag constant C", &p.c, -10.0, 10.0, "%.3f");
+    changed |= slider_with_input("Drag constant C", &p.c, -10.0, 10.0);
     section_spacer();
     section_subtitle("Initial position");
     changed |= slider_with_input("x-position", &p.pos_initial.x, 0.0, 2000.0);
@@ -119,9 +119,13 @@ bool section_controls(SimulationParams& p) {
 }
 
 void section_stats(const char* title, const char* str_id, const SimulationParams& p, const SimulationResult& res) {
+    Point3D pos_at_max_y = get_pos_at_max_y(res);
     ValueAndTime max_x = get_max_x(p, res);
     ValueAndTime max_y = get_max_y(p, res);
     ValueAndTime max_z = get_max_z(p, res);
+    ValueAndTime min_x = get_min_x(p, res);
+    ValueAndTime min_y = get_min_y(p, res);
+    ValueAndTime min_z = get_min_z(p, res);
     ValueAndTime max_range = get_max_range(p, res);
     section_title(title);
     if (ImGui::BeginTable(str_id, 2)) {
@@ -132,10 +136,19 @@ void section_stats(const char* title, const char* str_id, const SimulationParams
         table_row_key_value("Max x", max_x.value);
         table_row_key_value("Max y", max_y.value);
         table_row_key_value("Max z", max_z.value);
-        table_row_key_value("Max range", max_range.value);
+        table_row_key_value("Min x", min_x.value);
+        table_row_key_value("Min y", min_y.value);
+        table_row_key_value("Min z", min_z.value);
         table_row_key_value("Time to reach max x", max_x.time);
         table_row_key_value("Time to reach max y", max_y.time);
         table_row_key_value("Time to reach max z", max_z.time);
+        table_row_key_value("Time to reach min x", min_x.time);
+        table_row_key_value("Time to reach min y", min_y.time);
+        table_row_key_value("Time to reach min z", min_z.time);
+        table_row_key_value("Value of x-position at apex", pos_at_max_y.x);
+        table_row_key_value("Value of y-position at apex", pos_at_max_y.y);
+        table_row_key_value("Value of z-position at apex", pos_at_max_y.z);
+        table_row_key_value("Max range", max_range.value);
         table_row_key_value("Time to reach max range", max_range.time);
         ImGui::EndTable();
     }

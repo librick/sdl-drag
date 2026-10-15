@@ -6,7 +6,7 @@ struct SimulationResult;
 struct Preset;
 
 bool slider_with_input(const char* label, double* v, double v_min, double v_max, const char* fmt = "%.4f");
-void table_row_key_value(const char* key, double value);
+void table_row_key_value(const char* key, double value, const char* fmt = "%.4f");
 
 void section_title(const char* text);
 void section_subtitle(const char* text);
